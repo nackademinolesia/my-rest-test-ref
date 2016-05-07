@@ -1,0 +1,252 @@
+#%RAML 0.8
+title: Library Test
+version: 1.0
+baseUri: http://localhost:8080/rest/
+documentation:
+  - title: Library Test REST API
+    content: |
+      The REST API currently supports Books and Authors.
+      All endpoints support XML or JSON as input and output.
+      Use your HTTP request headers to specify media type.
+
+/books:
+  displayName: BOOKS
+
+  description: |
+    This is the top level description for /books.
+  post:
+    description: |
+      Create a new book.
+    body:
+      application/json:
+        example: |
+          {
+          "book":
+            {
+              "description":"The novel focuses on a post-apocalyptic character named Snowman, living near a group of primitive human-like creatures whom he calls Crakers.",
+              "isbn":"0-7710-0868-6",
+              "nbOfPage":411,
+              "title":"Oryx and Crake"
+              "author":
+              {
+                "name":"Margaret Atwood",
+                "id":3378
+              }
+            }
+          }
+
+          OR:
+          {
+          "book":
+            {
+              "description":"The novel focuses on a post-apocalyptic character named Snowman, living near a group of primitive human-like creatures whom he calls Crakers.",
+              "isbn":"0-7710-0868-6",
+              "nbOfPage":411,
+              "title":"Oryx and Crake"
+              "id":2999
+            }
+          }
+
+          OR:
+          {
+          "book":
+            {
+              "description":"The novel focuses on a post-apocalyptic character named Snowman, living near a group of primitive human-like creatures whom he calls Crakers.",
+              "isbn":"0-7710-0868-6",
+              "nbOfPage":411,
+              "title":"Oryx and Crake"
+            }
+          }
+      application/xml:
+        example: |
+          <book>
+            <description>The novel focuses on a post-apocalyptic character named Snowman, living near a group of primitive human-like creatures whom he calls Crakers.</description>
+            <isbn>0-7710-0868-6</isbn>
+            <nbOfPage>411</nbOfPage>
+            <title>Oryx and Crake</title>
+            <author>
+              <name>Margaret Atwood</name>
+              <id>3378</id>
+            </author>
+          </book>
+          
+          OR:
+          <book>
+            <description>The novel focuses on a post-apocalyptic character named Snowman, living near a group of primitive human-like creatures whom he calls Crakers.</description>
+            <isbn>0-7710-0868-6</isbn>
+            <nbOfPage>411</nbOfPage>
+            <title>Oryx and Crake</title>
+            <id>2999</id>
+          </book>
+          
+          OR:
+          <book>
+            <description>The novel focuses on a post-apocalyptic character named Snowman, living near a group of primitive human-like creatures whom he calls Crakers.</description>
+            <isbn>0-7710-0868-6</isbn>
+            <nbOfPage>411</nbOfPage>
+            <title>Oryx and Crake</title>
+            <author>
+          </book>
+    responses:
+      201:
+        description: The book was created.
+      400:
+        description: The book's id was already in the database, the book contained an author that had no id field set or the book contained an author that didn't exist in the database.
+  put:
+    description: |
+      Update a book with new data.
+    responses:
+      200:
+        description: The book was updated.
+      404:
+        description: The book was not found.
+      400:
+        description: The book contained an author with no id field set or the book contained an author that didn't exist in the database.
+  get:
+    description: |
+      Get all the books from the database.
+
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: The book id.
+    get:
+      description: |
+        Get the book with the specified id.
+      responses:
+        200:
+          description: The book was retrieved.
+        404:
+          description: The book was not found.
+    delete:
+      description: 
+        Delete the book with the specified id.
+      responses:
+        204:
+          description: The book was deleted.
+        404:
+          description: The book was not found.
+
+  /byauthor/{author_id}:
+    uriParameters:
+      author_id:
+        type: integer
+        description: The author id.
+    get:
+      description: 
+        Get all the books by the specified author.
+
+  /{book_id}/authors:
+    get:
+      description: 
+        Get the authors of the specified book.
+      responses:
+        200:
+          description: 
+            The book was found and the authors were retrieved.
+        404:
+          description: 
+            The book was not found.
+    post:
+      description: 
+        Add an author to the specified book.
+      responses:
+        200:
+          description: 
+            The book was found and the author was added to the book.
+        400:
+          description: 
+            The author did not have the id field set, or the author was already an author of this book.
+        404:
+          description: 
+            The book was not found.
+    put:
+      description: 
+        Update a book's list of authors with a new list of authors.
+      responses:
+        200:
+          description: 
+            The book was found and the list of authors was updated.
+        400:
+          description: 
+            One of the authors did not have the id field set, or one of the authors was already an author of this book.
+        404:
+          description: 
+            The book was not found.
+
+/authors:
+  displayName: AUTHORS
+
+  description: |
+    This is the top level description for /authors.
+  post:
+    description: |
+      Create a new author.
+    body:
+      application/json:
+        example: |
+          {
+          "author":
+            {
+              "name":"Margaret Atwood"
+            }
+          }
+
+          OR:
+          {
+          "author":
+            {
+              "name":"Margaret Atwood",
+              "id":244
+            }
+          }
+      application/xml:
+        example: |
+          <author>
+            <name>Douglas Adams</name>
+          </author>
+
+          OR:
+          <author>
+            <name>Douglas Adams</name>
+            <id>244</id>
+          </author>
+    responses:
+      201:
+        description: The author was created.
+      400:
+        description: The author's id was already in the database.
+  put:
+    description: |
+      Update a author with new data.
+    responses:
+      200:
+        description: The author was updated.
+      404:
+        description: The author was not found.
+  get:
+    description: |
+      Get all the authors from the database.
+
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: The author id.
+    get:
+      description: |
+        Get the author with the specified id.
+      responses:
+        200:
+          description: The author was retrieved.
+        404:
+          description: The author was not found.
+    delete:
+      description: 
+        Delete the author with the specified id.
+      responses:
+        204:
+          description: The author was deleted.
+        404:
+          description: The author was not found.
